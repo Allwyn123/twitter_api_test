@@ -4,10 +4,10 @@ const { appController } = require('./routesDependencies').default;
 
 router.get("/profile", (req, res) => {
     if(req.session.user) {
-        tool.get_doc().then(user_data => {
+        tool.get_user().then(user_data => {
             const udata = user_data.find(e => req.session.user.user_name == e.user_name);
             if(udata) {
-                const disp = tool.display_doc(udata.user_name);
+                const disp = tool.display_user(udata.user_name);
                 appController.send_func(disp, res);
     
             } else {
@@ -25,10 +25,10 @@ router.get("/profile", (req, res) => {
 
 router.put("/profile", (req, res) => {
     if(req.session.user) {
-        tool.get_doc().then(user_data => {
+        tool.get_user().then(user_data => {
             const udata = user_data.find(e => req.session.user.user_name == e.user_name);
             if(udata) {
-                const update = tool.update_doc(udata.user_name, req.body);
+                const update = tool.update_user(udata.user_name, req.body);
                 appController.send_func(update, res);
             } else {
                 appController.error_func(404, res);
@@ -46,10 +46,10 @@ router.put("/profile", (req, res) => {
 
 router.delete("/profile", (req, res) => {
     if(req.session.user) {
-        tool.get_doc().then(user_data => {
+        tool.get_user().then(user_data => {
             const udata = user_data.find(e => req.session.user.user_name == e.user_name);
             if(udata) {
-                const del = tool.delete_doc(udata.user_name);
+                const del = tool.delete_user(udata.user_name);
                 req.session.destroy();
                 appController.send_func(del, res);
             } else {

@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
  * Create document in database
  * @param {JSON} doc 
  */
-const create_doc = async (doc) => {
+const create_user = async (doc) => {
     try {
         /**
          * This function create user in database
@@ -31,7 +31,7 @@ const create_doc = async (doc) => {
  * Get data from database
  * @returns promise of user data
  */
- const get_doc = async () => {
+ const get_user = async () => {
     try {
         return await User.find();
     } catch(err) {
@@ -44,7 +44,7 @@ const create_doc = async (doc) => {
  * @param {String} uname 
  * @returns data
  */
-const display_doc = async (uname) => {
+const display_user = async (uname) => {
     try {
         const user_data = await User.find();
         return user_data.find((e) => e.user_name == uname);
@@ -60,7 +60,7 @@ const display_doc = async (uname) => {
  * @param {JSON} obj
  * @returns promise
  */
-const update_doc = async (user_name, obj) => {
+const update_user = async (user_name, obj) => {
     try {
         const user_data = await User.find();
         const index = user_data.findIndex(e => e.user_name == user_name);
@@ -96,7 +96,7 @@ const update_doc = async (user_name, obj) => {
  * @param {String} user_name
  * @returns promise
  */
-const delete_doc = async (user_name) => {
+const delete_user = async (user_name) => {
     try {
         const user_data = await User.find();
         const index = user_data.findIndex(e => e.user_name == user_name);
@@ -111,4 +111,4 @@ const delete_doc = async (user_name) => {
     }
 }
 
-module.exports = { create_doc, get_doc, update_doc, delete_doc, display_doc };
+module.exports = { create_user, get_user, update_user, delete_user, display_user };

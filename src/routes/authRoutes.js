@@ -46,13 +46,13 @@ router.use(session({secret: "mySession", resave: true, saveUninitialized: false}
  */
 
  router.post("/signup", (req, res) => {
-    const create = tool.create_doc(req.body);
+    const create = tool.create_user(req.body);
     authClient.signup(create, res);
 });
 
 router.post("/login", (req, res) => {
 
-    tool.get_doc().then(user_data => { 
+    tool.get_user().then(user_data => { 
         const data = user_data.find( e => e.email == req.body.email);
         if(data) {
             bcrypt.compare(req.body.password, data.password, (err, result) => {
