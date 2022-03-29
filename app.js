@@ -35,7 +35,7 @@ app.disable('x-powered-by');
 app.use(responseTime());
 
 //Best practices app settings
-app.set('title', 'PRDXN Node API');
+app.set('title', 'Twitter API');
 app.set('query parser', 'extended');
 
 const clientUrl = process.env.CLIENT_URL || config.client;
