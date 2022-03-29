@@ -87,7 +87,8 @@ const limitCount = process.env.RATE_LIMIT_COUNT || 10,
   limitMinute = process.env.RATE_LIMIT_MINUTE || 1; 
 
 /* Configuring Routes */
-app.use('/api', apiRateLimit(limiter, limitCount, limitMinute), routes);
+// app.use('/api', apiRateLimit(limiter, limitCount, limitMinute), routes);
+app.use('/api', routes);
 
 /* Handling invalid route */
 app.use('/', function (req, res) {
