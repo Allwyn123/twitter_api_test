@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const { appController } = require('./routesDependencies').default;
-const doc = require("../../tool");
+const tool = require("../../tool");
+const body_parser = require("body-parser");
+
+router.use(body_parser.json());
 
 // /**
 //  * @swagger
@@ -40,7 +43,7 @@ const doc = require("../../tool");
  */
 
  router.post("/signup", (req, res) => {
-    const create = doc.create_doc(req.body);
+    const create = tool.create_doc(req.body);
     appController.send_func(create, res);
 });
 
