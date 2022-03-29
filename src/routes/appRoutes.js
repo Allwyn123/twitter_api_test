@@ -43,4 +43,26 @@ router.put("/profile", (req, res) => {
     }
 });
 
+
+router.delete("/profile", (req, res) => {
+    if(req.session.user) {
+        tool.get_doc().then(user_data => {
+            const udata = user_data.find(e => req.session.user.user_name == e.user_name);
+            if(udata) {
+                const del = tool.delete_doc(udata.user_name);
+                req.session.destroy();
+                appController.send_func(del, res);
+            } else {
+                appController.error_func(404, res);
+            }
+        }).catch((err) => {
+            console.error('error', err.stack);
+            appController.error_func(500, res);
+        })
+
+    } else {
+        appController.error_func(401, res);
+    }
+});
+
 module.exports = router;
