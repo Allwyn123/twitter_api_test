@@ -58,7 +58,7 @@ router.post("/login", (req, res) => {
             bcrypt.compare(req.body.password, data.password, (err, result) => {
                 if(err) throw err;
                 if(result) {
-                    req.session.user = { user_id: data.user_name };
+                    req.session.user = { user_name: data.user_name };
                     const message = { message: `login success (${data.name})` };
                     authClient.login(200, false, message, res);
                 } else {
@@ -71,6 +71,7 @@ router.post("/login", (req, res) => {
             authClient.login(401, true, err_mess, res);
         }
     }).catch(err => {
+        console.error('error', err.stack);
         authClient.login(500, true, err, res);
     });
 });
