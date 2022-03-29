@@ -41,13 +41,13 @@ const create_doc = async (doc) => {
 
 /**
  * Get particular data using ID
- * @param {Number} uid 
+ * @param {String} uname 
  * @returns data
  */
-const display_doc = async (uid) => {
+const display_doc = async (uname) => {
     try {
         const user_data = await User.find();
-        return user_data.find((e) => e.user_id == uid);
+        return user_data.find((e) => e.user_name == uname);
 
     } catch(err) {
         return err;
@@ -56,20 +56,20 @@ const display_doc = async (uid) => {
 
 /**
  * Update document in database
- * @param {Number} user_id 
+ * @param {String} user_name
  * @param {JSON} obj
  * @returns promise
  */
-const update_doc = async (user_id, obj) => {
+const update_doc = async (user_name, obj) => {
     try {
         const user_data = await User.find();
-        const index = user_data.findIndex(e => e.user_id == user_id);
+        const index = user_data.findIndex(e => e.user_name == user_name);
         
         /**
          * This function for update user data in database
          */
         const upd_query = async () => {
-            await User.updateOne({user_id}, {$set: obj});
+            await User.updateOne({user_name}, {$set: obj});
         };
 
         if(index != -1) {
@@ -93,16 +93,16 @@ const update_doc = async (user_id, obj) => {
 
 /**
  * Delete document from database
- * @param {Number} user_id 
+ * @param {String} user_name
  * @returns promise
  */
-const delete_doc = async (user_id) => {
+const delete_doc = async (user_name) => {
     try {
         const user_data = await User.find();
-        const index = user_data.findIndex(e => e.user_id == user_id);
+        const index = user_data.findIndex(e => e.user_name == user_name);
         
         if(index != -1) {
-            await User.deleteOne({user_id});
+            await User.deleteOne({user_name});
             return "User Deleted";
         }
         return;
