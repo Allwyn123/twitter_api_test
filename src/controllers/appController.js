@@ -13,3 +13,23 @@ const errorMsg = require("../helpers/errorMessage").errorMessages;
     })
     .catch(err => res.send(utils.responseMsg(err, false, null)));
 }
+
+
+/**
+ * Send error message as Response
+ * @param {Status Code} status_code 
+ * @param {Response} res 
+ */
+ exports.error_func = (status_code, res) => {
+    if(status_code == 404) {
+        res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+    }
+    
+    if(status_code == 401) {
+        res.status(401).send(utils.responseMsg(errorMsg.unauthorized, false, null));
+    }
+
+    if(status_code == 500) {
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+}
