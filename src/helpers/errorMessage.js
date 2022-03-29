@@ -23,4 +23,12 @@ exports.errorMessages = {
     code: 'Bad Request',
     message: 'Data doesn\'t exist',
   },
+  dataNotFound: {
+    code: 'Not Found',
+    message: 'Data Not Found',
+  },
+  unauthorized: {
+    code: 'Unauthorized',
+    message: 'Unauthorized',
+  }
 };
