@@ -28,6 +28,18 @@ const create_doc = async (doc) => {
 }
 
 /**
+ * Get data from database
+ * @returns promise of user data
+ */
+ const get_doc = async () => {
+    try {
+        return await User.find();
+    } catch(err) {
+        return err;
+    }
+}
+
+/**
  * Get particular data using ID
  * @param {Number} uid 
  * @returns data
@@ -99,4 +111,4 @@ const delete_doc = async (user_id) => {
     }
 }
 
-module.exports = { create_doc, update_doc, delete_doc, display_doc };
+module.exports = { create_doc, get_doc, update_doc, delete_doc, display_doc };
