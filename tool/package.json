@@ -1,0 +1,11 @@
+{
+  "name": "tool",
+  "version": "1.0.0",
+  "description": "tool for create, update, delete, etc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Allwyn",
+  "license": "ISC"
+}
