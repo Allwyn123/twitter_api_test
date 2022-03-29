@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { appController } = require('./routesDependencies').default;
-const doc = require("../../doc");
+const doc = require("../../tool");
 
 // /**
 //  * @swagger
