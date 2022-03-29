@@ -2,7 +2,7 @@ const { User } = require("../src/models/userModel");
 const bcrypt = require("bcrypt");
 
 /**
- * Create document in database
+ * Create user document in database
  * @param {JSON} doc 
  */
 const create_user = async (doc) => {
@@ -28,7 +28,7 @@ const create_user = async (doc) => {
 }
 
 /**
- * Get data from database
+ * Get all users data from database
  * @returns promise of user data
  */
  const get_user = async () => {
@@ -40,7 +40,7 @@ const create_user = async (doc) => {
 }
 
 /**
- * Get particular data using ID
+ * Get userdata using username
  * @param {String} uname 
  * @returns data
  */
@@ -55,7 +55,7 @@ const display_user = async (uname) => {
 }
 
 /**
- * Update document in database
+ * Update user document in database
  * @param {String} user_name
  * @param {JSON} obj
  * @returns promise
@@ -110,5 +110,36 @@ const delete_user = async (user_name) => {
         return err;
     }
 }
+
+/**
+ * @note All routes for tweets listed below. 
+ */
+
+/**
+ * Create user document in database
+ * @param {JSON} doc 
+ */
+ const create_tweet = async (doc) => {
+    try {
+        /**
+         * This function create user in database
+         */
+        const create_query =  async () => {
+            const mydata = new User(doc);
+            await mydata.save();
+        }
+
+        bcrypt.hash(doc.password, 10, (err, hash) => {
+            if(err) throw err;
+            doc.password = hash;
+            create_query();
+        });
+
+        return "User Created";
+    } catch (err) {
+        return err;
+    }
+}
+
 
 module.exports = { create_user, get_user, update_user, delete_user, display_user };
