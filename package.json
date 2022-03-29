@@ -9,6 +9,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Allwyn123/twitter_api_test.git"
+  },
   "author": "Allwyn",
   "license": "ISC",
   "dependencies": {
