@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const dependencies = require('./routesDependencies').default;
+const { appController } = require('./routesDependencies').default;
+const doc = require("../../doc");
 
 // /**
 //  * @swagger
@@ -37,5 +38,10 @@ const dependencies = require('./routesDependencies').default;
 /**
  * @note All routes regarding local signup OR using Oauth sign-in should be listed below. 
  */
+
+ router.post("/signup", (req, res) => {
+    const create = doc.create_doc(req.body);
+    appController.send_func(create, res);
+});
 
 module.exports = router;
