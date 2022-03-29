@@ -7,10 +7,6 @@ const bcrypt = require("bcrypt");
  */
 const create_doc = async (doc) => {
     try {
-        const user_data = await User.find();
-        const id = user_data[user_data.length - 1].user_id + 1;
-        doc.user_id = id;
-        
         /**
          * This function create user in database
          */
