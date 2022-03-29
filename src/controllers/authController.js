@@ -1,4 +1,4 @@
-const authService = require('../services/authServices');
+// const authService = require('../services/authServices');
 const errorMsg = require('../helpers/errorMessage').errorMessages;
 const utils = require('../helpers/utils');
 
@@ -66,6 +66,7 @@ const utils = require('../helpers/utils');
       res.status(404).send(utils.responseMsg(message, false, null));
      }
    } catch(err) {
+    console.error('error', err.stack);
     res.status(500).send(utils.responseMsg(errorMsg.internalServerError));
    }
 }
