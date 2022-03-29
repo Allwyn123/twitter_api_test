@@ -1,6 +1,6 @@
 // User define DB Creadentials
 const dbCredentials = require('./config').db;
-const database = process.env.DATABASE_DRIVER || '';
+const database = process.env.DATABASE_DRIVER || 'mongodb';
 
 if (database.toLowerCase() === 'mongodb') {
 
