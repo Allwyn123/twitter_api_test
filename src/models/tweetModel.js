@@ -17,7 +17,7 @@ const tweet_schema = new mongoose.Schema({
     },
     liked_by: { type: Array },
     date: {
-        type: String,
+        type: Date,
         required: true,
         validate: (input) => {
             return new Date(input).toDateString() == new Date().toDateString();
