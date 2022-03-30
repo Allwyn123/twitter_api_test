@@ -241,9 +241,13 @@ const like_func = async (udata, para_id, opt) => {
             const index = tweet_data.findIndex(e => e._id == para_id);
             
             if(index != -1) {
-                await Tweet.updateOne({_id: para_id}, {$push: {liked_by: {user_name: udata.user_name}}});    
-                await User.updateOne({user_name: udata.user_name}, {$push: {liked_tweet: {_id: para_id}}});    
-                return "like added";
+                const data = await Tweet.find({liked_by: {user_name: udata.user_name}});
+                const user_liked = data.findIndex(e => e._id == para_id);
+                if(user_liked == -1){
+                    await Tweet.updateOne({_id: para_id}, {$push: {liked_by: {user_name: udata.user_name}}});    
+                    await User.updateOne({user_name: udata.user_name}, {$push: {liked_tweet: {_id: para_id}}});    
+                    return "like added";
+                } else return "already liked";
             }
             return;
         }
@@ -253,9 +257,13 @@ const like_func = async (udata, para_id, opt) => {
             const index = tweet_data.findIndex(e => e._id == para_id);
             
             if(index != -1) {
-                await Tweet.updateOne({_id: para_id}, {$pull: {liked_by: {user_name: udata.user_name}}});    
-                await User.updateOne({user_name: udata.user_name}, {$pull: {liked_tweet: {_id: para_id}}});    
-                return "like removed";
+                const data = await Tweet.find({liked_by: {user_name: udata.user_name}});
+                const user_liked = data.findIndex(e => e._id == para_id);
+                if(user_liked != -1){
+                    await Tweet.updateOne({_id: para_id}, {$pull: {liked_by: {user_name: udata.user_name}}});    
+                    await User.updateOne({user_name: udata.user_name}, {$pull: {liked_tweet: {_id: para_id}}});    
+                    return "like removed";
+                } else return "not liked to removed";
             }
             return;
         }
@@ -267,17 +275,27 @@ const like_func = async (udata, para_id, opt) => {
 const sort_func = async (opt) => {
     try {
         if(opt == "like") {
-            const aggre = await Tweet.aggregate([
-                {$sort: {liked_by: 1}},
-                
+            return await Tweet.aggregate([
+                {
+                    $project: {
+                        _id: "$_id",
+                        user_name: "$user_name",
+                        tweet_message: "$tweet_message",
+                        liked_by: "$liked_by",
+                        date: "$date",
+                        total_likes: { $size: "$liked_by" },
+                        __v: "$__v"
+                    }
+                },
+                {
+                    $sort: {total_likes: -1}
+                }
             ]);
-            console.log(aggre);
-            // return aggre;
         }
 
         if(opt == "date") {
             return await Tweet.aggregate([
-                {$sort: {date: 1}},
+                {$sort: {date: -1}},
             ]);
         }
     }
