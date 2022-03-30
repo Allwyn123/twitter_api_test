@@ -15,7 +15,7 @@ if (database.toLowerCase() === 'mongodb') {
   //Open the mongoose connection to the database
   mongoose.connect(dbURI, {
     config: {
-      autoIndex: false,
+      autoIndex: true,
     },
     useNewUrlParser: true,
     useUnifiedTopology: true,
