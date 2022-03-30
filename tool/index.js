@@ -264,5 +264,27 @@ const like_func = async (udata, para_id, opt) => {
     }
 };
 
+const sort_func = async (opt) => {
+    try {
+        if(opt == "like") {
+            const aggre = await Tweet.aggregate([
+                {$sort: {liked_by: 1}},
+                
+            ]);
+            console.log(aggre);
+            // return aggre;
+        }
+
+        if(opt == "date") {
+            return await Tweet.aggregate([
+                {$sort: {date: 1}},
+            ]);
+        }
+    }
+    catch(err) {
+        return err;
+    }
+}
+
 module.exports = { create_user, get_user, update_user, delete_user, display_user, 
-    create_tweet, get_tweet, display_tweet, update_tweet, delete_tweet, tweet_match, like_func };
+    create_tweet, get_tweet, display_tweet, update_tweet, delete_tweet, tweet_match, like_func, sort_func };
