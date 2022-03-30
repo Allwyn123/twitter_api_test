@@ -170,7 +170,47 @@ const display_tweet = async (uname, _id) => {
     }
 }
 
+/**
+ * Update tweet document in database
+ * @param {String} user_name
+ * @param {JSON} obj
+ * @returns promise
+ */
+const update_tweet = async (user_name, _id, obj) => {
+    try {
+        const tweet_data = await Tweet.find();
+        const index = tweet_data.findIndex(e => e.user_name == user_name);
+        
+        if(index != -1) {
+            await Tweet.updateOne({_id}, {$set: obj});    
+            return "Tweet Updated";
+        }
+        return;
+    } catch(err) {
+        return err;
+    }
+}
+
+/**
+ * Delete tweet document from database
+ * @param {String} user_name
+ * @returns promise
+ */
+const delete_tweet = async (user_name, _id) => {
+    try {
+        const user_data = await Tweet.find();
+        const index = user_data.findIndex(e => e.user_name == user_name);
+        
+        if(index != -1) {
+            await Tweet.deleteOne({_id});
+            return "Tweet Deleted";
+        }
+        return;
+    } catch(err) {
+        return err;
+    }
+}
 
 
 module.exports = { create_user, get_user, update_user, delete_user, display_user, 
-    create_tweet };
+    create_tweet, get_tweet, display_tweet, update_tweet, delete_tweet };
