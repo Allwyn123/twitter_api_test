@@ -211,6 +211,58 @@ const delete_tweet = async (user_name, _id) => {
     }
 }
 
+/**
+ * check tweet id match with user_name
+ * @param {String} Request
+ * @param {Number} id
+ * @param {JSON} Tweets Data
+ * @returns JSON
+ */
+const tweet_match = (req, para_id, tweet_data) => {
+    return tweet_data.find(e => {
+        if(req.session.user.user_name == e.user_name) {
+            if(para_id == e._id) {
+                return e;
+            }
+        }
+    });
+}
+
+/**
+ * Add/Remove likes to tweets
+ * @param {JSON} udata
+ * @param {Number} id
+ * @returns promise
+ */
+const like_func = async (udata, para_id, opt) => {
+    try {
+        if(opt == "like") {
+            const tweet_data = await Tweet.find();
+            const index = tweet_data.findIndex(e => e._id == para_id);
+            
+            if(index != -1) {
+                await Tweet.updateOne({_id: para_id}, {$push: {liked_by: {user_name: udata.user_name}}});    
+                await User.updateOne({user_name: udata.user_name}, {$push: {liked_tweet: {_id: para_id}}});    
+                return "like added";
+            }
+            return;
+        }
+
+        if(opt == "unlike") {
+            const tweet_data = await Tweet.find();
+            const index = tweet_data.findIndex(e => e._id == para_id);
+            
+            if(index != -1) {
+                await Tweet.updateOne({_id: para_id}, {$pull: {liked_by: {user_name: udata.user_name}}});    
+                await User.updateOne({user_name: udata.user_name}, {$pull: {liked_tweet: {_id: para_id}}});    
+                return "like removed";
+            }
+            return;
+        }
+    } catch(err) {
+        return err;
+    }
+};
 
 module.exports = { create_user, get_user, update_user, delete_user, display_user, 
-    create_tweet, get_tweet, display_tweet, update_tweet, delete_tweet };
+    create_tweet, get_tweet, display_tweet, update_tweet, delete_tweet, tweet_match, like_func };
