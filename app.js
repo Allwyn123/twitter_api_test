@@ -6,7 +6,6 @@ const compression = require('compression');
 const helmet = require('helmet');
 const responseTime = require('response-time');
 const dotenvFlow = require('dotenv-flow');
-const client = require('redis').createClient();
 const cors = require('cors');
 
 dotenvFlow.config();
@@ -80,14 +79,6 @@ app.use(require('express-status-monitor')());
  */
 app.use(compression());
 
-/* API rate limit configuration. */
-const limiter = require('express-limiter')(app, client);
-const apiRateLimit = require('./src/services/apiRateLimit').rateLimit;
-const limitCount = process.env.RATE_LIMIT_COUNT || 10,
-  limitMinute = process.env.RATE_LIMIT_MINUTE || 1; 
-
-/* Configuring Routes */
-// app.use('/api', apiRateLimit(limiter, limitCount, limitMinute), routes);
 app.use('/api', routes);
 
 /* Handling invalid route */
