@@ -1,27 +1,28 @@
 const mongoose = require("mongoose");
 
 const tweet_schema = new mongoose.Schema({
-    tweet_id: {
-        type: String,
+    _id: {
+        type: Number,
+        index: true,
         unique: true,
         required: true
     },
     user_name: {
         type: String,
-        unique: true,
         required: true
     },
     tweet_message: {
         type: String,
         required: true
     },
-    likes: {
-        total_likes: { type: Number },
-        liked_by: { type: String }
-    },
+    liked_by: { type: Array },
     date: {
-        type: Date,
-        required: true
+        type: String,
+        required: true,
+        validate: (input) => {
+            return new Date(input).toDateString() == new Date().toDateString();
+        },
+        message: input => `${input} should be current date`
     }
 });
 
