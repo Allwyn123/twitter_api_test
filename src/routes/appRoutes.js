@@ -188,6 +188,22 @@ router.get("/timeline", (req, res) => {
     }
 });
 
+router.get("/timeline/:sort", (req, res) => {
+    if(req.session.user) {
+        if(req.params.sort == "date") {
+            const sorted = tool.sort_func("date");
+            appController.send_func(sorted, res);
+        }
+        
+        if(req.params.sort == "like") {
+            const sorted = tool.sort_func("like");
+            appController.send_func(sorted, res);
+        }
+    } else {
+        appController.error_func(401, res);
+    }
+});
+
 router.put("/like/:id", (req, res) => {
     if(req.session.user) {
         tool.get_user().then(user_data => {
