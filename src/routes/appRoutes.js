@@ -179,4 +179,61 @@ router.delete("/tweets/:id", (req, res) => {
     }
 });
 
+router.get("/timeline", (req, res) => {
+    if(req.session.user) {
+        const disp = tool.get_tweet();
+        appController.send_func(disp, res);
+    } else {
+        appController.error_func(401, res);
+    }
+});
+
+router.put("/like/:id", (req, res) => {
+    if(req.session.user) {
+        tool.get_user().then(user_data => {
+            const udata = user_data.find(e => req.session.user.user_name == e.user_name);
+            const para_id = parseInt(req.params.id);
+
+            if(udata) {
+                const liked = tool.like_func(udata, para_id, "like");
+                if(liked) {
+                    appController.send_func(liked, res);
+                } else appController.error_func(404, res);
+                
+            } else {
+                appController.error_func(404, res);
+            }
+        }).catch((err) => {
+            console.error('error', err.stack);
+            appController.error_func(500, res);
+        });
+    } else {
+        appController.error_func(401, res);
+    }
+});
+
+router.put("/unlike/:id", (req, res) => {
+    if(req.session.user) {
+        tool.get_user().then(user_data => {
+            const udata = user_data.find(e => req.session.user.user_name == e.user_name);
+            const para_id = parseInt(req.params.id);
+
+            if(udata) {
+                const liked = tool.like_func(udata, para_id, "unlike");
+                if(liked) {
+                    appController.send_func(liked, res);
+                } else appController.error_func(404, res);
+                
+            } else {
+                appController.error_func(404, res);
+            }
+        }).catch((err) => {
+            console.error('error', err.stack);
+            appController.error_func(500, res);
+        });
+    } else {
+        appController.error_func(401, res);
+    }
+});
+
 module.exports = router;
