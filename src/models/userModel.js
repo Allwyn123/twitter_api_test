@@ -32,6 +32,7 @@ const user_schema = new mongoose.Schema({
         required: true,
         match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/, "Enter Valid Password"]
     },
+    liked_tweet: { type: Array },
 });
 
 exports.User = new mongoose.model("user", user_schema);
