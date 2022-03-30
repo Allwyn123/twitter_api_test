@@ -1,4 +1,6 @@
+
 const { User } = require("../src/models/userModel");
+const { Tweet } = require("../src/models/tweetModel");
 const bcrypt = require("bcrypt");
 
 /**
@@ -112,34 +114,63 @@ const delete_user = async (user_name) => {
 }
 
 /**
- * @note All routes for tweets listed below. 
+ * @note All module functions for tweets listed below. 
  */
 
 /**
- * Create user document in database
+ * Create tweets document in database
  * @param {JSON} doc 
  */
- const create_tweet = async (doc) => {
+ const create_tweet = async (doc, uname) => {
     try {
-        /**
-         * This function create user in database
-         */
-        const create_query =  async () => {
-            const mydata = new User(doc);
-            await mydata.save();
-        }
+        const tweet_data = await Tweet.find();
+        if(tweet_data.length != 0) {
+            const id = tweet_data[tweet_data.length - 1]._id + 1;
+            doc._id = id;
+        } 
+        if(tweet_data.length == 0) doc._id = 1;
 
-        bcrypt.hash(doc.password, 10, (err, hash) => {
-            if(err) throw err;
-            doc.password = hash;
-            create_query();
-        });
+        doc.user_name = uname;
+        doc.date = new Date().toDateString();
 
-        return "User Created";
+        const mydata = new Tweet(doc);
+        await mydata.save();
+        return "Tweet Created";
     } catch (err) {
         return err;
     }
 }
 
+/**
+ * Get all tweets data from database
+ * @returns promise of user data
+ */
+ const get_tweet = async () => {
+    try {
+        return await Tweet.find();
+    } catch(err) {
+        return err;
+    }
+}
 
-module.exports = { create_user, get_user, update_user, delete_user, display_user };
+/**
+ * Get tweets data using username
+ * @param {String} uname 
+ * @returns data
+ */
+const display_tweet = async (uname, _id) => {
+    try {
+        if(_id) {
+            return await Tweet.find({$and: [{user_name: uname},{_id}]});
+        }
+        return await Tweet.find({user_name: uname});
+
+    } catch(err) {
+        return err;
+    }
+}
+
+
+
+module.exports = { create_user, get_user, update_user, delete_user, display_user, 
+    create_tweet };
