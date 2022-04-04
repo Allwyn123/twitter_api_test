@@ -69,7 +69,7 @@ exports.login = async (req, res) => {
  * @function logout
  */
  exports.logout =  (req, res) => {
-	if(req.headers.cookie == undefined) {
+	if(req.cookies.jwt == undefined) {
 		const message = { message: "User not founded for logout" };
 		res.status(404).send(utils.responseMsg(message, false, null));
     } else {
