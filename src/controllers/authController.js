@@ -4,54 +4,6 @@ const utils = require('../helpers/utils');
 const { User } = require("../models/userModel");
 const bcrypt = require('bcrypt');
 
-// /**
-//  * @description Local login controller.
-//  * @function login
-//  */
-// exports.login = async (req, res) => {
-//   try {
-
-//     const {
-//       email,
-//       password
-//     } = req.body;
-    
-//     //Please replace dummy payload with your actual object for creating token.
-//     let message = {
-//       'msg': 'Login Successful.',
-//       'token': authService.createToken({email, password})
-//     };
-//     res.send(utils.responseMsg(null, true, message));
-//   } catch (error) {
-//     console.error('error', error.stack);
-//     res.status(500).send(utils.responseMsg(errorMsg.internalServerError));
-//   }
-// };
-
-// /**
-//  * @description Local login controller.
-//  * @function login
-//  * @param {Status Code} status_code 
-//  * @param {Response} res 
-//  */
-//  exports.login = (status_code, error, msg, res) => {
-//   if(error) {
-//       if(status_code == 404) {
-//           res.status(404).send(utils.responseMsg(msg, false, null))
-//       }
-      
-//       if(status_code == 401) {
-//           res.status(401).send(utils.responseMsg(msg, false, null))
-//       }
-
-//       if(status_code == 500) {
-//         res.status(500).send(utils.responseMsg(msg, false, null));
-//       }
-//   } else {
-//       res.send(utils.responseMsg(null, true, msg));
-//   }
-// }
-
 /**
  * @description Local signup controller.
  * @function signup
