@@ -45,17 +45,8 @@ router.use(session({secret: "mySession", resave: true, saveUninitialized: false}
  * @note All routes regarding local signup OR using Oauth sign-in should be listed below. 
  */
 
- router.post("/signup", authClient.signup);
-
+router.post("/signup", authClient.signup);
 router.post("/login", authClient.login);
-
-router.get("/logout", (req, res) => {
-    if(req.session.user == undefined) {
-        authClient.logout(false, res);
-    } else {
-        req.session.destroy();
-        authClient.logout(true, res);
-    }
-});
+router.get("/logout", authClient.logout);
 
 module.exports = router;
