@@ -47,31 +47,7 @@ router.use(session({secret: "mySession", resave: true, saveUninitialized: false}
 
  router.post("/signup", authClient.signup);
 
-router.post("/login", (req, res) => {
-
-    tool.get_user().then(user_data => { 
-        const data = user_data.find( e => e.email == req.body.email);
-        if(data) {
-            bcrypt.compare(req.body.password, data.password, (err, result) => {
-                if(err) throw err;
-                if(result) {
-                    req.session.user = { user_name: data.user_name };
-                    const message = { message: `login success (${data.name})` };
-                    authClient.login(200, false, message, res);
-                } else {
-                    const err_mess = { message: "login failed", status: "Unauthorized" };
-                    authClient.login(401, true, err_mess, res);
-                }
-            });
-        } else {
-            const err_mess = { message: "login failed", status: "Unauthorized" };
-            authClient.login(401, true, err_mess, res);
-        }
-    }).catch(err => {
-        console.error('error', err.stack);
-        authClient.login(500, true, err, res);
-    });
-});
+router.post("/login", authClient.login);
 
 router.get("/logout", (req, res) => {
     if(req.session.user == undefined) {
