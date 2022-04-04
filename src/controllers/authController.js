@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
 	if(loginMatch != null) {
 		const match = await bcrypt.compare(password, loginMatch.password);
 		if(match) {
-			const user = {user_name: loginMatch.user_namee};
+			const user = {user_name: loginMatch.user_name};
 			const accessToken = authService.createToken(user);
 			res.cookie("jwt", accessToken);
 
