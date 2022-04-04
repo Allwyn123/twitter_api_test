@@ -45,10 +45,7 @@ router.use(session({secret: "mySession", resave: true, saveUninitialized: false}
  * @note All routes regarding local signup OR using Oauth sign-in should be listed below. 
  */
 
- router.post("/signup", (req, res) => {
-    const create = tool.create_user(req.body);
-    authClient.signup(create, res);
-});
+ router.post("/signup", authClient.signup);
 
 router.post("/login", (req, res) => {
 
