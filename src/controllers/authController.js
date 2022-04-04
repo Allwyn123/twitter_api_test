@@ -1,6 +1,8 @@
 // const authService = require('../services/authServices');
 const errorMsg = require('../helpers/errorMessage').errorMessages;
 const utils = require('../helpers/utils');
+const { User } = require("../models/userModel");
+const bcrypt = require('bcrypt');
 
 // /**
 //  * @description Local login controller.
@@ -71,16 +73,46 @@ const utils = require('../helpers/utils');
    }
 }
 
+// /**
+//  * @description Local signup controller.
+//  * @function signup
+//  * @param {Promise} param 
+//  * @param {Response} res 
+//  */
+//  exports.signup = (param, res) => {
+//   param.then(e => {
+//       if(e) res.send(utils.responseMsg(null, true, e));
+//       if(!e) res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+//   })
+//   .catch(err => res.send(utils.responseMsg(err, false, null)));
+// }
+
+
 /**
  * @description Local signup controller.
  * @function signup
- * @param {Promise} param 
- * @param {Response} res 
  */
- exports.signup = (param, res) => {
-  param.then(e => {
-      if(e) res.send(utils.responseMsg(null, true, e));
-      if(!e) res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
-  })
-  .catch(err => res.send(utils.responseMsg(err, false, null)));
+exports.signup = async (req, res) => {
+//   const create = tool.create_user(req.body);
+//   authClient.signup(create, res);
+ 
+try {
+	const doc = req.body;
+	const userExist = await User.find({user_name: doc.user_name});
+
+	if(userExist == 0) {
+		doc.password = await bcrypt.hash(doc.password, 10);	
+		const mydata = new User(doc);
+		await mydata.save();
+	
+		const msg = "User Created";
+		res.status(201).send(utils.responseMsg(null, true, msg));
+	} else {
+		const msg = "User Existed";
+		res.status(409).send(utils.responseMsg(msg, false, null));
+	}
+  } catch (err) {
+    console.error(err);
+	res.status(500).send(utils.responseMsg(err.errors, false, null));
+  }
 }
