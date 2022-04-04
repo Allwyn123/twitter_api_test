@@ -1,5 +1,7 @@
 const utils = require("../helpers/utils");
 const errorMsg = require("../helpers/errorMessage").errorMessages;
+const { User } = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 /**
  * Send data/message as Response
@@ -32,4 +34,55 @@ const errorMsg = require("../helpers/errorMessage").errorMessages;
     if(status_code == 500) {
         res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
     }
-}
+};
+
+/**
+ * @description find user data.
+ * @function userFind
+ */
+const userFind = async (findData) => {
+    try{
+        if(findData == undefined) {
+            const data = await User.find();
+            return data;
+        } else {
+            const data = await User.findOne(findData);
+            return data;
+        }
+    }
+    catch(err) {
+        console.error("error", err.stack);
+        return res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+ };
+
+/**
+ * @description token verification controller.
+ * @function token_check
+ */
+ exports.token_check = (req, res, next) => {
+    const token = req.cookies.jwt;
+    if(token == null) return res.status(401).send(utils.responseMsg(errorMsg.unauthorized, false, null));
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if(err) return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        req.user = user;
+        next();
+    });
+};
+
+/**
+ * @description UserProfile controller.
+ * @function userProfile
+ */
+ exports.userProfile = async (req, res) => {
+    try {
+        const userData =  await userFind({user_name: req.user.user_name});
+        if(userData != null) res.send(utils.responseMsg(null, true, userData));
+        else res.status(401).send(utils.responseMsg(errorMsg.unauthorized, false, null));
+        
+    } catch (err) {
+        console.error("error", err.stack);
+        return res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
