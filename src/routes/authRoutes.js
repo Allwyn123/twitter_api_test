@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const { authClient } = require('./routesDependencies').default;
+const cookieParser = require("cookie-parser");
+
+router.use(cookieParser());
 
 /**
  * @note All routes regarding local signup OR using Oauth sign-in should be listed below. 
