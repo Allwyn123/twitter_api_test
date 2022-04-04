@@ -53,27 +53,6 @@ const bcrypt = require('bcrypt');
 // }
 
 /**
- * @description Local logout controller.
- * @function logout
- * @param {Status Code} status_code 
- * @param {Response} res 
- */
- exports.logout = async (login, res) => {
-   try { 
-     if(login) {
-       const message = { message: "logout" };
-       res.send(utils.responseMsg(null, true, message));
-     } else {
-      const message = { message: "User not founded for logout" };
-      res.status(404).send(utils.responseMsg(message, false, null));
-     }
-   } catch(err) {
-    console.error('error', err.stack);
-    res.status(500).send(utils.responseMsg(errorMsg.internalServerError));
-   }
-};
-
-/**
  * @description Local signup controller.
  * @function signup
  */
@@ -131,4 +110,19 @@ exports.login = async (req, res) => {
     console.error('error', error.stack);
     res.status(500).send(utils.responseMsg(errorMsg.internalServerError));
   }
+};
+
+/**
+ * @description Local logout controller.
+ * @function logout
+ */
+ exports.logout =  (req, res) => {
+	if(req.headers.cookie == undefined) {
+		const message = { message: "User not founded for logout" };
+		res.status(404).send(utils.responseMsg(message, false, null));
+    } else {
+        res.clearCookie("jwt");
+		const message = { message: "logout" };
+		res.send(utils.responseMsg(null, true, message));
+    }
 };
