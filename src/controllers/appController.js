@@ -89,7 +89,7 @@ const userFind = async (findData) => {
 
 /**
  * @description update userProfile controller.
- * @function userProfile
+ * @function updateUserProfile
  */
  exports.updateUserProfile = async (req, res) => {
     try {
@@ -114,3 +114,25 @@ const userFind = async (findData) => {
         res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
     }
 }
+
+
+/**
+ * @description delete userProfile controller.
+ * @function deleteUserProfile
+ */
+ exports.deleteUserProfile = async (req, res) => {
+    try {
+        const userData = await userFind({user_name: req.user.user_name});
+        if(userData != null) {
+            await User.deleteOne({user_name: userData.user_name});
+            res.clearCookie("jwt");
+            const msg = "User Deleted";
+            res.send(utils.responseMsg(null, true, msg));
+        } else {
+            res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        }
+    } catch (err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
