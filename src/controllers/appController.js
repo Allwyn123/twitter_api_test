@@ -195,3 +195,27 @@ exports.timeline = async (req, res) => {
         res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
     }
 };
+
+/**
+* @description update tweet controller.
+* @function updateTweet
+*/
+exports.updateTweet = async (req, res) => {
+    try {
+        const para_id = parseInt(req.params.id);
+        const tweetData = await findFunc("tweet", {t_id: para_id});
+    
+        if(tweetData.length != 0) {
+            await Tweet.updateOne({t_id: tweetData[0].t_id}, {$set: req.body}); 
+            const msg = "Tweet Updated";
+            res.send(utils.responseMsg(null, true, msg));
+
+        } else {
+            res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        }
+        
+    } catch (err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
