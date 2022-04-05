@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const tool = require("../../tool");
 const { appController } = require('./routesDependencies').default;
 const cookieParser = require("cookie-parser");
 
