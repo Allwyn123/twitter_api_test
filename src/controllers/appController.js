@@ -1,6 +1,7 @@
 const utils = require("../helpers/utils");
 const errorMsg = require("../helpers/errorMessage").errorMessages;
 const { User } = require("../models/userModel");
+const { Tweet } = require("../models/tweetModel");
 const jwt = require("jsonwebtoken");
 
 /**
@@ -38,16 +39,30 @@ const jwt = require("jsonwebtoken");
 
 /**
  * @description find user data.
- * @function userFind
+ * @function findFunc
+ * @param {String} opt model name
+ * @param {Object} findData 
+ * @returns user/tweet data
  */
-const userFind = async (findData) => {
+const findFunc = async (opt, findData) => {
     try{
-        if(findData == undefined) {
-            const data = await User.find();
-            return data;
-        } else {
-            const data = await User.findOne(findData);
-            return data;
+        if(opt == "user") {
+            if(findData == undefined) {
+                const data = await User.find();
+                return data;
+            } else {
+                const data = await User.findOne(findData);
+                return data;
+            }
+        }
+        if(opt == "tweet") {
+            if(findData == undefined) {
+                const data = await Tweet.find();
+                return data;
+            } else {
+                const data = await Tweet.findOne(findData);
+                return data;
+            }
         }
     }
     catch(err) {
@@ -77,7 +92,7 @@ const userFind = async (findData) => {
  */
  exports.userProfile = async (req, res) => {
     try {
-        const userData =  await userFind({user_name: req.user.user_name});
+        const userData =  await findFunc("user", {user_name: req.user.user_name});
         if(userData != null) res.send(utils.responseMsg(null, true, userData));
         else res.status(401).send(utils.responseMsg(errorMsg.unauthorized, false, null));
         
@@ -93,7 +108,7 @@ const userFind = async (findData) => {
  */
  exports.updateUserProfile = async (req, res) => {
     try {
-        const userData = await userFind({user_name: req.user.user_name});
+        const userData = await findFunc("user" ,{user_name: req.user.user_name});
         if(userData != null) {
             const doc = req.body;
             const password_exist = doc.hasOwnProperty("password");
@@ -122,7 +137,7 @@ const userFind = async (findData) => {
  */
  exports.deleteUserProfile = async (req, res) => {
     try {
-        const userData = await userFind({user_name: req.user.user_name});
+        const userData = await findFunc("user", {user_name: req.user.user_name});
         if(userData != null) {
             await User.deleteOne({user_name: userData.user_name});
             res.clearCookie("jwt");
@@ -131,6 +146,32 @@ const userFind = async (findData) => {
         } else {
             res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
         }
+    } catch (err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
+
+/**
+* @description create tweet controller.
+* @function createTweet
+*/
+exports.createTweet = async (req, res) => {
+    try {
+        const obj = req.body;
+        const tweet_count = await Tweet.find().count();
+        if(tweet_count != 0) {
+            const id = tweet_count + 1;
+            obj.t_id = id;
+        } else obj.t_id = 1;
+    
+        obj.user_name = req.user.user_name;
+    
+        const mydata = new Tweet(obj);
+        await mydata.save();
+        const msg = "Tweet Created";
+        res.status(201).send(utils.responseMsg(null, true, msg));
+        
     } catch (err) {
         console.error("error", err.stack);
         res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
