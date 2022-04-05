@@ -4,18 +4,18 @@ const { User } = require("../models/userModel");
 const { Tweet } = require("../models/tweetModel");
 const jwt = require("jsonwebtoken");
 
-/**
- * Send data/message as Response
- * @param {Promise} param 
- * @param {Response} res 
- */
- exports.send_func = (param, res) => {
-    param.then(e => {
-        if(e) res.send(utils.responseMsg(null, true, e));
-        if(!e) res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
-    })
-    .catch(err => res.send(utils.responseMsg(err, false, null)));
-}
+// /**
+//  * Send data/message as Response
+//  * @param {Promise} param 
+//  * @param {Response} res 
+//  */
+//  exports.send_func = (param, res) => {
+//     param.then(e => {
+//         if(e) res.send(utils.responseMsg(null, true, e));
+//         if(!e) res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+//     })
+//     .catch(err => res.send(utils.responseMsg(err, false, null)));
+// }
 
 
 /**
@@ -206,6 +206,28 @@ exports.timeline = async (req, res) => {
             res.send(utils.responseMsg(null, true, tweetData));
         } else {
             res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        }
+        
+    } catch (err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
+
+/**
+* @description timelinse sort controller.
+* @function timelineSort
+*/
+exports.timelineSort = async (req, res) => {
+    try {
+        if(req.params.sort == "date") {
+            const data = await Tweet.find({user_name: req.user.user_name}).sort({createdAt: -1}); 
+            res.send(utils.responseMsg(null, true, data));
+        }
+        
+        if(req.params.sort == "like") {
+            const data = await Tweet.find({user_name: req.user.user_name}).sort({liked_by: -1})
+            res.send(utils.responseMsg(null, true, data));
         }
         
     } catch (err) {
