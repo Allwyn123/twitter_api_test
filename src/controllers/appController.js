@@ -102,7 +102,7 @@ const updateFunc = async (opt, id, updateData) => {
             
             if(email_exist) {
                 const msg = "Email not Update with OTP verification";
-                res.send(utils.responseMsg(msg, false, null));
+                res.status(400).send(utils.responseMsg(msg, false, null));
                 return;
             }
 
