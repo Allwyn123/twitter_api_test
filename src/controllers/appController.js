@@ -98,6 +98,14 @@ const updateFunc = async (opt, id, updateData) => {
         if(userData != null) {
             const doc = req.body;
             const password_exist = doc.hasOwnProperty("password");
+            const email_exist = doc.hasOwnProperty("email");
+            
+            if(email_exist) {
+                const msg = "Email not Update with OTP verification";
+                res.send(utils.responseMsg(msg, false, null));
+                return;
+            }
+
             if(password_exist) {
                 doc.password = await bcrypt.hash(doc.password, 10);
                 updateFunc("user", {user_name: userData.user_name}, {$set: doc});
