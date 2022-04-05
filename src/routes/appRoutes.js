@@ -14,6 +14,6 @@ router.get("/profile/timeline", appController.token_check, appController.timelin
 router.put("/profile/tweets/:id", appController.token_check, appController.updateTweet);
 router.delete("/profile/tweets/:id", appController.token_check, appController.deleteTweet);
 router.get("/profile/timeline/:sort", appController.token_check, appController.timelineSort);
-router.put("/profile/tweets/:id/like/", appController.token_check, appController.likeTweet);
+router.put("/profile/tweets/:id/like", appController.token_check, appController.likeTweet);
 
 module.exports = router;
