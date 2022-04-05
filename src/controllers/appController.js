@@ -72,7 +72,7 @@ const userFind = async (findData) => {
 };
 
 /**
- * @description UserProfile controller.
+ * @description get userProfile controller.
  * @function userProfile
  */
  exports.userProfile = async (req, res) => {
@@ -86,3 +86,31 @@ const userFind = async (findData) => {
         return res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
     }
 };
+
+/**
+ * @description update userProfile controller.
+ * @function userProfile
+ */
+ exports.updateUserProfile = async (req, res) => {
+    try {
+        const userData = await userFind({user_name: req.user.user_name});
+        if(userData != null) {
+            const doc = req.body;
+            const password_exist = doc.hasOwnProperty("password");
+            if(password_exist) {
+                doc.password = await bcrypt.hash(doc.password, 10);
+                await User.updateOne({user_name: userData.user_name}, {$set: doc});
+
+            } else await User.updateOne({user_name: userData.user_name}, {$set: doc});
+            
+            const msg = "Updated";
+            res.send(utils.responseMsg(null, true, msg));
+        
+        } else {
+            res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        }
+    } catch(err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+}
