@@ -10,20 +10,7 @@ router.put("/profile", appController.token_check, appController.updateUserProfil
 router.delete("/profile", appController.token_check, appController.deleteUserProfile);
 
 // tweets routes
-router.post("/tweets", (req, res) => {
-    if(req.session.user) {
-        tool.get_user().then(user_data => {
-            const udata = user_data.find(e => req.session.user.user_name == e.user_name);
-            const create = tool.create_tweet(req.body, udata.user_name);
-            appController.send_func(create, res);
-        }).catch((err) => {
-            console.error('error', err.stack);
-            appController.error_func(500, res);
-        });
-    } else {
-        appController.error_func(401, res);
-    }
-});
+router.post("/profile/tweets", appController.token_check, appController.createTweet);
 
 router.get("/tweets", (req, res) => {
     if(req.session.user) {
