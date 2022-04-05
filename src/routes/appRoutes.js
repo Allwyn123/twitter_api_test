@@ -7,25 +7,7 @@ router.use(cookieParser());
 
 router.get("/profile", appController.token_check, appController.userProfile);
 
-router.put("/profile", (req, res) => {
-    if(req.session.user) {
-        tool.get_user().then(user_data => {
-            const udata = user_data.find(e => req.session.user.user_name == e.user_name);
-            if(udata) {
-                const update = tool.update_user(udata.user_name, req.body);
-                appController.send_func(update, res);
-            } else {
-                appController.error_func(404, res);
-            }
-        }).catch((err) => {
-            console.error('error', err.stack);
-            appController.error_func(500, res);
-        });
-
-    } else {
-        appController.error_func(401, res);
-    }
-});
+router.put("/profile", appController.token_check, appController.updateUserProfile);
 
 
 router.delete("/profile", (req, res) => {
