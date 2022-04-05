@@ -6,32 +6,15 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 router.get("/profile", appController.token_check, appController.userProfile);
+
 router.put("/profile", appController.token_check, appController.updateUserProfile);
+
 router.delete("/profile", appController.token_check, appController.deleteUserProfile);
 
 // tweets routes
 router.post("/profile/tweets", appController.token_check, appController.createTweet);
 
-router.get("/tweets", (req, res) => {
-    if(req.session.user) {
-        tool.get_tweet().then(tweet_data => {
-            const udata = tweet_data.find(e => req.session.user.user_name == e.user_name);
-            if(udata) {
-                const disp = tool.display_tweet(udata.user_name);
-                appController.send_func(disp, res);
-    
-            } else {
-                appController.error_func(404, res);
-            }
-        }).catch((err) => {
-            console.error('error', err.stack);
-            appController.error_func(500, res);
-        });
-
-    } else {
-        appController.error_func(401, res);
-    }
-});
+router.get("/profile/timeline", appController.token_check, appController.timeline);
 
 router.get("/tweets/:id", (req, res) => {
     if(req.session.user) {
