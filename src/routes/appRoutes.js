@@ -6,30 +6,8 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 router.get("/profile", appController.token_check, appController.userProfile);
-
 router.put("/profile", appController.token_check, appController.updateUserProfile);
-
-
-router.delete("/profile", (req, res) => {
-    if(req.session.user) {
-        tool.get_user().then(user_data => {
-            const udata = user_data.find(e => req.session.user.user_name == e.user_name);
-            if(udata) {
-                const del = tool.delete_user(udata.user_name);
-                req.session.destroy();
-                appController.send_func(del, res);
-            } else {
-                appController.error_func(404, res);
-            }
-        }).catch((err) => {
-            console.error('error', err.stack);
-            appController.error_func(500, res);
-        });
-
-    } else {
-        appController.error_func(401, res);
-    }
-});
+router.delete("/profile", appController.token_check, appController.deleteUserProfile);
 
 // tweets routes
 router.post("/tweets", (req, res) => {
