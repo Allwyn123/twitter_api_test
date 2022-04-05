@@ -60,7 +60,7 @@ const findFunc = async (opt, findData) => {
                 const data = await Tweet.find();
                 return data;
             } else {
-                const data = await Tweet.findOne(findData);
+                const data = await Tweet.find(findData);
                 return data;
             }
         }
@@ -130,7 +130,6 @@ const findFunc = async (opt, findData) => {
     }
 }
 
-
 /**
  * @description delete userProfile controller.
  * @function deleteUserProfile
@@ -171,6 +170,25 @@ exports.createTweet = async (req, res) => {
         await mydata.save();
         const msg = "Tweet Created";
         res.status(201).send(utils.responseMsg(null, true, msg));
+        
+    } catch (err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
+
+/**
+* @description timeline controller.
+* @function timeline
+*/
+exports.timeline = async (req, res) => {
+    try {
+        const tweetData = await findFunc("tweet", {user_name: req.user.user_name});
+        if(tweetData.length != 0) {
+            res.send(utils.responseMsg(null, true, tweetData));
+        } else {
+            res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        }
         
     } catch (err) {
         console.error("error", err.stack);
