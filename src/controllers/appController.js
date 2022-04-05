@@ -77,24 +77,11 @@ const findFunc = async (opt, findData) => {
  * @param {String} opt model name
  * @param {Object} id
  * @param {Object} updateData 
- * @returns user/tweet message
  */
 const updateFunc = async (opt, id, updateData) => {
     try{
-        if(opt == "user") {
-            if(updateData != undefined) {
-                await User.updateOne(id, updateData);
-            } else {
-                return "updateDate undefinded";
-            }
-        }
-        if(opt == "tweet") {
-            if(updateData != undefined) {
-                await Tweet.updateOne(id, updateData);
-            } else {
-                return "updateDate undefinded";
-            }
-        }
+        if(opt == "user") await User.updateOne(id, updateData);
+        if(opt == "tweet") await Tweet.updateOne(id, updateData);
     }
     catch(err) {
         console.error("error", err.stack);
@@ -145,9 +132,9 @@ const updateFunc = async (opt, id, updateData) => {
             const password_exist = doc.hasOwnProperty("password");
             if(password_exist) {
                 doc.password = await bcrypt.hash(doc.password, 10);
-                await User.updateOne({user_name: userData.user_name}, {$set: doc});
+                updateFunc("user", {user_name: userData.user_name}, {$set: doc});
 
-            } else await User.updateOne({user_name: userData.user_name}, {$set: doc});
+            } else updateFunc("user", {user_name: userData.user_name}, {$set: doc});
             
             const msg = "Updated";
             res.send(utils.responseMsg(null, true, msg));
@@ -237,7 +224,7 @@ exports.updateTweet = async (req, res) => {
         const tweetData = await findFunc("tweet", {t_id: para_id});
     
         if(tweetData.length != 0) {
-            await Tweet.updateOne({t_id: tweetData[0].t_id}, {$set: req.body}); 
+            updateFunc("tweet", {t_id: tweetData[0].t_id}, {$set: req.body});
             const msg = "Tweet Updated";
             res.send(utils.responseMsg(null, true, msg));
 
@@ -286,14 +273,14 @@ exports.likeTweet = async (req, res) => {
         if(tweetData.length != 0) {
             const isLiked = tweetData[0].liked_by.find(e => e.user_name == req.user.user_name);
             if(isLiked == undefined){
-                await updateFunc("tweet", {t_id: para_id}, {$push: {liked_by: {user_name: req.user.user_name}}});    
-                await updateFunc("user", {user_name: req.user.user_name}, {$push: {liked_tweet: {t_id: para_id}}});   
+                updateFunc("tweet", {t_id: para_id}, {$push: {liked_by: {user_name: req.user.user_name}}});    
+                updateFunc("user", {user_name: req.user.user_name}, {$push: {liked_tweet: {t_id: para_id}}});   
 
                 const msg = "like added";
                 res.send(utils.responseMsg(null, true, msg));
             } else {
-                await updateFunc("tweet", {t_id: para_id}, {$pull: {liked_by: {user_name: req.user.user_name}}});    
-                await updateFunc("user", {user_name: req.user.user_name}, {$pull: {liked_tweet: {t_id: para_id}}});   
+                updateFunc("tweet", {t_id: para_id}, {$pull: {liked_by: {user_name: req.user.user_name}}});    
+                updateFunc("user", {user_name: req.user.user_name}, {$pull: {liked_tweet: {t_id: para_id}}});   
 
                 const msg = "like remove";
                 res.send(utils.responseMsg(null, true, msg));
