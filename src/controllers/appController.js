@@ -71,6 +71,37 @@ const findFunc = async (opt, findData) => {
     }
  };
 
+ /**
+ * @description update user data.
+ * @function updateFunc
+ * @param {String} opt model name
+ * @param {Object} id
+ * @param {Object} updateData 
+ * @returns user/tweet message
+ */
+const updateFunc = async (opt, id, updateData) => {
+    try{
+        if(opt == "user") {
+            if(updateData != undefined) {
+                await User.updateOne(id, updateData);
+            } else {
+                return "updateDate undefinded";
+            }
+        }
+        if(opt == "tweet") {
+            if(updateData != undefined) {
+                await Tweet.updateOne(id, updateData);
+            } else {
+                return "updateDate undefinded";
+            }
+        }
+    }
+    catch(err) {
+        console.error("error", err.stack);
+        return res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+ };
+
 /**
  * @description token verification controller.
  * @function token_check
@@ -237,6 +268,40 @@ exports.deleteTweet = async (req, res) => {
             res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
         }
         
+    } catch (err) {
+        console.error("error", err.stack);
+        res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
+    }
+};
+
+/**
+* @description like tweet controller.
+* @function likeTweet
+*/
+exports.likeTweet = async (req, res) => {
+    try {
+        const para_id = parseInt(req.params.id);
+        const tweetData = await findFunc("tweet", {t_id: para_id});
+
+        if(tweetData.length != 0) {
+            const isLiked = tweetData[0].liked_by.find(e => e.user_name == req.user.user_name);
+            if(isLiked == undefined){
+                await updateFunc("tweet", {t_id: para_id}, {$push: {liked_by: {user_name: req.user.user_name}}});    
+                await updateFunc("user", {user_name: req.user.user_name}, {$push: {liked_tweet: {t_id: para_id}}});   
+
+                const msg = "like added";
+                res.send(utils.responseMsg(null, true, msg));
+            } else {
+                await updateFunc("tweet", {t_id: para_id}, {$pull: {liked_by: {user_name: req.user.user_name}}});    
+                await updateFunc("user", {user_name: req.user.user_name}, {$pull: {liked_tweet: {t_id: para_id}}});   
+
+                const msg = "like remove";
+                res.send(utils.responseMsg(null, true, msg));
+            } 
+            
+        } else {
+            res.status(404).send(utils.responseMsg(errorMsg.dataNotFound, false, null));
+        }
     } catch (err) {
         console.error("error", err.stack);
         res.status(500).send(utils.responseMsg(errorMsg.internalServerError, false, null));
