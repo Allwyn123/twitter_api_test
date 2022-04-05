@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const tweet_schema = new mongoose.Schema({
-    _id: {
+    t_id: {
         type: Number,
         unique: true,
         required: true
@@ -14,15 +14,8 @@ const tweet_schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    liked_by: { type: Array },
-    date: {
-        type: Date,
-        required: true,
-        validate: (input) => {
-            return new Date(input).toDateString() == new Date().toDateString();
-        },
-        message: input => `${input} should be current date`
-    }
-});
+    liked_by: { type: Array }
+},
+{ timestamps: true });
 
 exports.Tweet = new mongoose.model("tweet", tweet_schema);
