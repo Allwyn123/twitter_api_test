@@ -31,6 +31,8 @@
     "mongoose": "^6.2.9",
     "morgan": "^1.10.0",
     "redis": "^4.0.4",
-    "response-time": "^2.3.2"
+    "response-time": "^2.3.2",
+    "swagger-jsdoc": "^6.2.0",
+    "swagger-ui-express": "^4.3.0"
   }
 }

@@ -18,4 +18,28 @@ config.jwt = {
 
 config.client = process.env.CLIENT_URL || '*';
 
+/* Swagger Definition */
+config.swaggerDefinition = {
+  info: {
+    title: 'Twitter API ',
+    version: '1.0.0',
+    description: 'Twitter API  Project \n User can signup, login, and logout. \n User profile fetch, creation, update, and deletion \n Tweets create, update, delete and view Timeline',
+  },
+  host: process.env.HOST || 'localhost:8000',
+  basePath: '/api',
+  securityDefinitions: {
+    bearerAuth: {
+      type: 'apiKey',
+      name: 'Authorization',
+      scheme: 'bearer',
+      in: 'header',
+    },
+  },
+};
+config.swaggerOptions = {
+  customSiteTitle: '',
+  customCss: '',
+  customfavIcon: '',
+};
+
 module.exports = config;

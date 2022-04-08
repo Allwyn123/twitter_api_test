@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const compression = require('compression');
 const helmet = require('helmet');
 const responseTime = require('response-time');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const dotenvFlow = require('dotenv-flow');
 const cors = require('cors');
 
@@ -53,6 +55,20 @@ const corsOption = {
 app.use(cors(corsOption));
 app.options('*', cors());
 
+/**
+ * @name Swagger Documentation
+ * @description This is used for API documentation. It's not mandatory 
+ *  */
+ const swaggerDefinition = config.swaggerDefinition;
+ const swaggerOptions = config.swaggerOptions;
+ const options = {
+   swaggerDefinition,
+   'apis': ['./src/routes/*.js'],
+ };
+ 
+ const swaggerSpec = swaggerJsDoc(options);
+ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOptions));
+ 
 /* App activity logging */
 app.use(morgan(':method :url :date :remote-addr :status :response-time'));
 
@@ -79,6 +95,7 @@ app.use(require('express-status-monitor')());
  */
 app.use(compression());
 
+/* Configuring Routes */
 app.use('/api', routes);
 
 /* Handling invalid route */

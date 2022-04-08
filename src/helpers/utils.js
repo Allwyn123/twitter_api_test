@@ -1,3 +1,6 @@
+const errorMsg = require("./errorMessage").errorMessages;
+const jwt = require("jsonwebtoken");
+
 /**
  * Pass Object Or Array Or String Or Number and find if it is empty or not, Null Or Undefined also gives false
  * @param  {Any} data data to be checked against
@@ -35,7 +38,7 @@ exports.checkIfDataExists = (data) => {
  * @param {Boolean} paginated
  * @returns {Object}
  */
-exports.responseMsg = (errMsg, successStatus, data, paginated) => {
+const responseMsg = (errMsg, successStatus, data, paginated) => {
   const responseObj = {
     success: successStatus || false,
     error: errMsg || null,
@@ -61,4 +64,23 @@ exports.responseMsg = (errMsg, successStatus, data, paginated) => {
   }
 
   return responseObj;
+};
+
+exports.responseMsg = responseMsg;
+
+/**
+ * @description token verification controller.
+ * @function token_check
+ */
+ exports.token_check = (req, res, next) => {
+  const bearerHeader = req.headers["authorization"];
+  const token = bearerHeader.split(" ")[1];
+
+  if (token == null) return res.status(401).send(responseMsg(errorMsg.unauthorized, false, null));
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(404).send(responseMsg(errorMsg.dataNotFound, false, null));
+    req.user = user;
+    next();
+  });
 };
